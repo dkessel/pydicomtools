@@ -13,5 +13,7 @@ Also, e-mail discussion is welcome: d.kessel+pydicomtools@mailbox.org
 Requirements
 ============
 Python 2.7 (Python 3.x is supported)
-pydicom (0.9.8 or higher)
-pynetdicom (0.8.1 or higher)
+
+pydicom (0.9.9 or higher)
+
+twisteddicom (0.0.1 or higher)
