@@ -1,19 +1,19 @@
 
 import tkinter
 import tkinter.filedialog
+from pydicomtools.importer.importerapp import ImporterApp
 
 
 class ImporterFrame(tkinter.Frame):
-    def __init__(self, master=None):
+    def __init__(self, app, master=None):
         tkinter.Frame.__init__(self, master)
+        self.app = app
+        
         self.pack()
 
         self.topText = tkinter.StringVar()
         self.topText.set("Where is the data you want to import?")
 
-        self.create_widgets()
-
-    def create_widgets(self):
         self.topLabel = tkinter.Label(self, textvariable=self.topText)
         self.topLabel.pack()
 
@@ -22,16 +22,122 @@ class ImporterFrame(tkinter.Frame):
         self.selectDirectoryButton["command"] = self.select_directory
         self.selectDirectoryButton.pack()
 
+        self.backButton = tkinter.Button(self)
+        self.backButton["text"] = "< Back"
+
+        self.addMoreButton = tkinter.Button(self)
+        self.addMoreButton["text"] = "Add more…"
+        self.addMoreButton["command"] = self.go_to_step_one
+
+        self.continueButton = tkinter.Button(self)
+        self.continueButton["text"] = "Continue >"
+        self.continueButton["command"] = self.go_to_step_three
+
+        self.networkAddressLabel = tkinter.Label(self)
+        self.networkAddressLabel["text"] = "Network Address"
+
+        self.networkAddressEntry = tkinter.Entry(self)
+        self.networkAddress = tkinter.StringVar()
+        self.networkAddress.set("192.168.0.1")
+        self.networkAddressEntry["textvariable"] = self.networkAddress
+
+        self.cStorePortLabel = tkinter.Label(self)
+        self.cStorePortLabel["text"] = "Port (C-Store)"
+
+        self.cStorePortEntry = tkinter.Entry(self)
+        self.cStorePort = tkinter.StringVar()
+        self.cStorePort.set("104")
+        self.cStorePortEntry["textvariable"] = self.cStorePort
+
+        self.cEchoCheckButton = tkinter.Checkbutton(self)
+        self.cEchoCheckButton["text"] = "Check if system is available before sending"
+        self.cEchoChecked = tkinter.BooleanVar()
+        self.cEchoChecked.set(True)
+        self.cEchoCheckButton["variable"] = self.cEchoChecked
+
+        self.dicomCommitmentCheckButton = tkinter.Checkbutton(self)
+        self.dicomCommitmentCheckButton["text"] = "Request DICOM Commitment after sending"
+        self.dicomCommitmentChecked = tkinter.BooleanVar()
+        self.dicomCommitmentChecked.set(True)
+        self.dicomCommitmentCheckButton["variable"] = self.dicomCommitmentChecked
+
+        self.qrVerifyCheckButton = tkinter.Checkbutton(self)
+        self.qrVerifyCheckButton["text"] = "Use DICOM Q/R to verify data was received"
+        self.qrVerifyChecked = tkinter.BooleanVar()
+        self.qrVerifyChecked.set(True)
+        self.qrVerifyCheckButton["variable"] = self.qrVerifyChecked
+
+        self.sendDataButton = tkinter.Button(self)
+        self.sendDataButton["text"] = "Send data"
+
     def select_directory(self):
-        selectedDir = tkinter.filedialog.askdirectory(mustexist=True, title="select the directory to import")
-        print(selectedDir)
+        selected_dir = tkinter.filedialog.askdirectory(mustexist=True, title="select the directory to import from")
+        if selected_dir:
+            self.app.set_directory(selected_dir)
+            # TODO: start background scan of data... show text 'Searching for data'
+            self.go_to_step_two()
+
+    def go_to_step_two(self):
+        # remove elements
+        # from step 1
+        self.selectDirectoryButton.pack_forget()
+        # from step 3
+        self.networkAddressLabel.pack_forget()
+        self.networkAddressEntry.pack_forget()
+        self.cStorePortLabel.pack_forget()
+        self.cStorePortEntry.pack_forget()
+        self.cEchoCheckButton.pack_forget()
+        self.dicomCommitmentCheckButton.pack_forget()
+        self.qrVerifyCheckButton.pack_forget()
+        self.sendDataButton.pack_forget()
+        # add elements
+        self.topText.set('Summary of data to import:\n\n' + self.app.get_directory_content_summary())
+        self.backButton["command"] = self.forget_directory_and_go_to_step_one
+        self.backButton.pack()
+        self.addMoreButton.pack()
+        self.continueButton.pack()
+
+    def forget_directory_and_go_to_step_one(self):
+        self.app.set_directory(None)
+        self.go_to_step_one()
+
+    def go_to_step_one(self):
+        # remove elements
+        # from step 2
+        self.backButton.pack_forget()
+        self.addMoreButton.pack_forget()
+        self.continueButton.pack_forget()
+        # add elements
+        self.topText.set("Where is the data you want to import?")
+        self.selectDirectoryButton.pack()
+
+    def go_to_step_three(self):
+        # remove elements
+        self.backButton.pack_forget()
+        self.addMoreButton.pack_forget()
+        self.continueButton.pack_forget()
+        # add elements
+        self.topText.set("Transfer Configuration")
+        self.networkAddressLabel.pack()
+        self.networkAddressEntry.pack()
+        self.cStorePortLabel.pack()
+        self.cStorePortEntry.pack()
+        self.cEchoCheckButton.pack()
+        self.dicomCommitmentCheckButton.pack()
+        self.qrVerifyCheckButton.pack()
+
+        self.backButton["command"] = self.go_to_step_two
+        self.backButton.pack()
+        self.sendDataButton.pack()
 
 
 def main():
     root = tkinter.Tk()
     root.wm_title("pydicomtools importer")
-    app = ImporterFrame(root)
-    app.mainloop()
+
+    app = ImporterApp()
+    frame = ImporterFrame(app, root)
+    frame.mainloop()
 
 if __name__ == "__main__":
     main()
