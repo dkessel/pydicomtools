@@ -1,7 +1,8 @@
 pydicomtools
 ============
 
-A set of DICOM tools implemented in Python
+A set of DICOM tools implemented in Python:
+- pydicomtools importer: simple tool for DICOM data import, acting as a DICOM Storage Class User (SCU)
 
 Contact and Discussion
 ======================
