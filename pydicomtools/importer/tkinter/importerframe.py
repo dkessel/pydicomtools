@@ -93,9 +93,9 @@ class ImporterFrame(tkinter.Frame):
         self.sendDataButton.pack_forget()
         # add elements
         self.backButton["command"] = self.forget_directory_and_go_to_step_one
-        self.backButton.pack(padx=5, pady=5)
-        self.addMoreButton.pack(padx=5, pady=5, after=self.backButton)
-        self.continueButton.pack(padx=5, pady=5, after=self.addMoreButton)
+        self.backButton.pack(padx=5, pady=5, side="left")
+        self.addMoreButton.pack(padx=5, pady=5, side="left")
+        self.continueButton.pack(padx=5, pady=5, side="left")
         # start scanning...
         if scan:
             self.continueButton["state"] = "disabled"
@@ -140,8 +140,8 @@ class ImporterFrame(tkinter.Frame):
         self.qrVerifyCheckButton.pack(padx=5, pady=5)
 
         self.backButton["command"] = self.go_to_step_two
-        self.backButton.pack(padx=5, pady=5)
-        self.sendDataButton.pack(padx=5, pady=5)
+        self.backButton.pack(padx=5, pady=5, side="left")
+        self.sendDataButton.pack(padx=5, pady=5, side="right")
 
 
 def main():
