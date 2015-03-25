@@ -1,10 +1,11 @@
 import os
 import dicom
-
+from pydicomtools.importer.importerconfig import ImporterConfig
 
 class ImporterApp():
     def __init__(self):
-        self.directory = None
+        self.config = ImporterConfig()
+        self.directory = self.config.get_default_directory()
         self.patientIDs = set()
         self.studyUIDs = dict()
         self.seriesUIDs = dict()
@@ -17,6 +18,9 @@ class ImporterApp():
 
     def get_directory(self):
         return self.directory
+
+    def get_config(self):
+        return self.config
 
     def get_directory_content_summary(self):
         if self.directory:

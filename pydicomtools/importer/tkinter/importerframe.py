@@ -38,7 +38,7 @@ class ImporterFrame(tkinter.Frame):
 
         self.networkAddressEntry = tkinter.Entry(self)
         self.networkAddress = tkinter.StringVar()
-        self.networkAddress.set("192.168.0.1")
+        self.networkAddress.set(self.app.get_config().get_cstore_address())
         self.networkAddressEntry["textvariable"] = self.networkAddress
 
         self.cStorePortLabel = tkinter.Label(self)
@@ -46,25 +46,25 @@ class ImporterFrame(tkinter.Frame):
 
         self.cStorePortEntry = tkinter.Entry(self)
         self.cStorePort = tkinter.StringVar()
-        self.cStorePort.set("104")
+        self.cStorePort.set(str(self.app.get_config().get_cstore_port()))
         self.cStorePortEntry["textvariable"] = self.cStorePort
 
         self.cEchoCheckButton = tkinter.Checkbutton(self)
         self.cEchoCheckButton["text"] = "Check if system is available before sending"
         self.cEchoChecked = tkinter.BooleanVar()
-        self.cEchoChecked.set(True)
+        self.cEchoChecked.set(self.app.get_config().is_verify_cecho())
         self.cEchoCheckButton["variable"] = self.cEchoChecked
 
         self.dicomCommitmentCheckButton = tkinter.Checkbutton(self)
         self.dicomCommitmentCheckButton["text"] = "Request DICOM Commitment after sending"
         self.dicomCommitmentChecked = tkinter.BooleanVar()
-        self.dicomCommitmentChecked.set(True)
+        self.dicomCommitmentChecked.set(self.app.get_config().is_verify_commitment())
         self.dicomCommitmentCheckButton["variable"] = self.dicomCommitmentChecked
 
         self.qrVerifyCheckButton = tkinter.Checkbutton(self)
         self.qrVerifyCheckButton["text"] = "Use DICOM Q/R to verify data was received"
         self.qrVerifyChecked = tkinter.BooleanVar()
-        self.qrVerifyChecked.set(True)
+        self.qrVerifyChecked.set(self.app.get_config().is_verify_query_retrieve())
         self.qrVerifyCheckButton["variable"] = self.qrVerifyChecked
 
         self.sendDataButton = tkinter.Button(self)
@@ -72,7 +72,7 @@ class ImporterFrame(tkinter.Frame):
 
     def select_directory(self):
         selected_dir = tkinter.filedialog.askdirectory(mustexist=True, title="select the directory to import from",
-                                                       initialdir="/home/daniel/Downloads/DICOM/case1/")
+                                                       initialdir=self.app.get_directory())
         if selected_dir:
             self.app.set_directory(selected_dir)
             # TODO: start background scan of data... show text 'Searching for data'
