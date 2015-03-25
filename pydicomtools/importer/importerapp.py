@@ -1,6 +1,9 @@
 import os
 import dicom
 from pydicomtools.importer.importerconfig import ImporterConfig
+from pydicomtools.dcmtk.storescu import StoreSCU
+from pydicomtools.dcmtk.storescu import ProcessException
+
 
 class ImporterApp():
     def __init__(self):
@@ -77,3 +80,17 @@ class ImporterApp():
         # tell callback that we are done
         if self.callback:
             self.callback()
+
+    def send_data(self, peer, port):
+        # TODO - use list of scanned files instead of directory?
+        try:
+            store_scu = StoreSCU(peer, port, self.directory)
+            store_scu.execute()
+        except ProcessException as e:
+            raise ImporterException(e.args)
+
+
+class ImporterException(Exception):
+
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, args, kwargs)

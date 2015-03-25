@@ -1,7 +1,8 @@
 import tkinter
 import tkinter.filedialog
-import time
+import tkinter.messagebox
 from pydicomtools.importer.importerapp import ImporterApp
+from pydicomtools.importer.importerapp import ImporterException
 
 
 class ImporterFrame(tkinter.Frame):
@@ -141,7 +142,18 @@ class ImporterFrame(tkinter.Frame):
 
         self.backButton["command"] = self.go_to_step_two
         self.backButton.pack(padx=5, pady=5, side="left")
+        self.sendDataButton["command"] = self.send_data
         self.sendDataButton.pack(padx=5, pady=5, side="right")
+
+    def send_data(self):
+        address = self.networkAddress
+        port = self.cStorePort
+
+        try:
+            self.app.send_data(address.get(), port.get())
+            tkinter.messagebox.showinfo("done", "finished sending the files!")
+        except ImporterException as e:
+            tkinter.messagebox.showerror("error", e.args[0])
 
 
 def main():
