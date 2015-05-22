@@ -17,7 +17,7 @@ class StoreSCU():
         self.dcmfile_in = dcmfile_in
 
     def execute(self):
-        result = subprocess.call(["storescu", "--scan-directories", self.peer, str(self.port), str(self.dcmfile_in)])
+        result = subprocess.call(["storescu", "--scan-directories", self.peer, str(self.port), str(self.dcmfile_in) + "/*.*"])
         if result:
             raise ProcessException("error sending the data! process returned: " + str(result))
 
