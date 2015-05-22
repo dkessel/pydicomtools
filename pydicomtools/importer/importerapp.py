@@ -2,7 +2,8 @@ import os
 import dicom
 from pydicomtools.importer.importerconfig import ImporterConfig
 from pydicomtools.dcmtk.storescu import StoreSCU
-from pydicomtools.dcmtk.storescu import ProcessException
+from pydicomtools.dcmtk.echoscu import EchoSCU
+from pydicomtools.dcmtk.processexception import ProcessException
 
 
 class ImporterApp():
@@ -84,8 +85,17 @@ class ImporterApp():
     def send_data(self, peer, port):
         # TODO - use list of scanned files instead of directory?
         try:
+            if self.config.is_verify_cecho():
+                try:
+                    echo_scu = EchoSCU(peer, port)
+                    echo_scu.execute()
+                    print("C-Echo  successful!")
+                except ProcessException as e:
+                    raise ImporterException(e.args)
+
             store_scu = StoreSCU(peer, port, self.directory)
             store_scu.execute()
+            print("C-Store successful!")
         except ProcessException as e:
             raise ImporterException(e.args)
 

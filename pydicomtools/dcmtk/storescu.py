@@ -1,5 +1,6 @@
 
 import subprocess
+from pydicomtools.dcmtk.processexception import ProcessException
 
 
 class StoreSCU():
@@ -21,8 +22,3 @@ class StoreSCU():
         if result:
             raise ProcessException("error sending the data! process returned: " + str(result))
 
-
-class ProcessException(Exception):
-
-    def __init__(self, *args, **kwargs):
-        Exception.__init__(self, args)
