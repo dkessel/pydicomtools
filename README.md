@@ -7,7 +7,7 @@ A set of DICOM tools implemented in Python:
 Contact and Discussion
 ======================
 
-Discussion is very welcome on IRC on freenode, channel #pydicomtools.
+Discussion is very welcome on IRC on freenode, username dkessel.
 
 Also, e-mail discussion is welcome: d.kessel+pydicomtools@mailbox.org
 
